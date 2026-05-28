@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="7.196" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2026-05-28T20:27:32" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Post Creation Testing" timestamp="2026-05-28T20:27:32" tests="2" file="/Users/aneesh/Development/MERN-STACK--Blog-Post-App/backend/test/task1/app.spec.js" time="7.196" failures="0">
+    <testcase name="Post Creation Testing should create a post with expected response structure and values" time="2.387" classname="should create a post with expected response structure and values">
+    </testcase>
+    <testcase name="Post Creation Testing should save the created post to the database" time="2.721" classname="should save the created post to the database">
+    </testcase>
+  </testsuite>
+</testsuites>
