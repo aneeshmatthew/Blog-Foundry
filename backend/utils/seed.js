@@ -1,19 +1,21 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import User from '../models/User.js';
 import Post from '../models/Post.js';
 import { users } from '../data/users.js';
 import { posts } from '../data/posts.js';
 
-dotenv.config({ path: new URL('../.env', import.meta.url) });
+const connectionString =
+  process.env.MONGODB_URI 
+  //|| 'mongodb+srv://mathewanm_db_user:qU7kGnQRefjguCJB@cluster0.p3auebr.mongodb.net/BlogPlatform?retryWrites=true&serverSelectionTimeoutMS=2000';
+  //'mongodb://127.0.0.1:27017/BlogPlatform?directConnection=true&serverSelectionTimeoutMS=2000';
+
+  //mongodb+srv://admin:MyStrongPassword@mycluster.abcd123.mongodb.net/myDatabase
+
+  //https://cloud.mongodb.com/v2/6a0231f318bfb0a20517e910#/overview
+
 
 const seedDatabase = async () => {
   try {
-    const connectionString = process.env.MONGODB_URI;
-    if (!connectionString) {
-      throw new Error('MONGODB_URI is not set. Add it to backend/.env');
-    }
-
     await mongoose.connect(connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true

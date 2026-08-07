@@ -1,27 +1,36 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
-dotenv.config({ path: new URL('../.env', import.meta.url) });
+const connectionString = process.env.MONGODB_URI;
 
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDatabase = async () => {
-  try {
-    const connectionString = process.env.MONGODB_URI;
-    if (!connectionString) {
-      throw new Error('MONGODB_URI is not set. Add it to backend/.env');
-    }
-
-    await mongoose.connect(connectionString, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-    console.log('Connected to MongoDB with Mongoose');
-    return mongoose.connection;
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    throw error;
+  if (!connectionString) {
+    throw new Error('MONGODB_URI environment variable is not set');
   }
+
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(connectionString, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then((mongooseInstance) => {
+        console.log('Connected to MongoDB with Mongoose');
+        return mongooseInstance;
+      });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 };
 
 export default connectDatabase;
-

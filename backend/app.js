@@ -7,18 +7,24 @@ import connectDatabase from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 
+dotenv.config();
+
 const PORT = process.env.PORT || 8080;
 const app = express();
 
-dotenv.config();
+const corsOptions = process.env.FRONTEND_URL
+  ? { origin: process.env.FRONTEND_URL.split(',').map((url) => url.trim()) }
+  : {};
 
 connectDatabase().catch((err) => {
   console.error('Database connection failed:', err);
-  process.exit(1);
+  if (!process.env.VERCEL) {
+    process.exit(1);
+  }
 });
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
   res.send('Blog Platform Backend is running successfully!');
@@ -30,19 +36,16 @@ app.use('/api/posts', postRoutes);
 app.use((err, req, res, next) => {
   console.error(err.stack);
 
-  // Mongoose validation errors
   if (err.name === 'ValidationError') {
     const messages = Object.values(err.errors).map((e) => e.message);
     return res.status(400).json({ message: messages.join(', ') });
   }
 
-  // Mongoose duplicate key errors
   if (err.code === 11000) {
     const field = Object.keys(err.keyPattern)[0];
     return res.status(400).json({ message: `${field} already exists` });
   }
 
-  // Cast errors (invalid ObjectId)
   if (err.name === 'CastError') {
     return res.status(400).json({ message: 'Invalid ID format' });
   }
@@ -50,9 +53,10 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || 'Internal Server Error');
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend server is running on port: ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Backend server is running on port: ${PORT}`);
+  });
+}
 
 export default app;
-
