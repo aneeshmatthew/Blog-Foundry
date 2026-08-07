@@ -2,17 +2,27 @@
 
 echo "Setting up BlogPlatform..."
 
-# Start MongoDB if not already running
+# Start MongoDB only if no cloud URI is configured
 echo "Checking MongoDB status..."
-if pgrep mongod > /dev/null; then
-  echo "MongoDB is already running"
+if [ -f backend/.env ]; then
+  set -a
+  source backend/.env
+  set +a
+fi
+
+if [ -n "$MONGODB_URI" ]; then
+  echo "MONGODB_URI is configured; skipping local mongod startup."
 else
-  echo "Starting MongoDB..."
-  mongod --config /etc/mongod.conf --fork > /dev/null
-  if [ $? -eq 0 ]; then
-    echo "MongoDB started successfully"
+  if pgrep mongod > /dev/null; then
+    echo "MongoDB is already running"
   else
-    echo "Warning: Could not start MongoDB. Please ensure MongoDB is installed and configured."
+    echo "Starting MongoDB..."
+    mongod --config /etc/mongod.conf --fork > /dev/null
+    if [ $? -eq 0 ]; then
+      echo "MongoDB started successfully"
+    else
+      echo "Warning: Could not start MongoDB. Please ensure MongoDB is installed and configured."
+    fi
   fi
 fi
 

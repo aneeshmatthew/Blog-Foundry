@@ -1,13 +1,22 @@
+import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import User from '../models/User.js';
 import Post from '../models/Post.js';
 import { users } from '../data/users.js';
 import { posts } from '../data/posts.js';
 
+dotenv.config();
+
 const connectionString =
-  process.env.MONGODB_URI 
-  //|| 'mongodb+srv://mathewanm_db_user:qU7kGnQRefjguCJB@cluster0.p3auebr.mongodb.net/BlogPlatform?retryWrites=true&serverSelectionTimeoutMS=2000';
-  //'mongodb://127.0.0.1:27017/BlogPlatform?directConnection=true&serverSelectionTimeoutMS=2000';
+  process.env.MONGODB_URI ||
+  // If you want a local fallback, uncomment the next line and set your local URI.
+  // 'mongodb://127.0.0.1:27017/BlogPlatform?directConnection=true&serverSelectionTimeoutMS=2000';
+  null;
+
+if (!connectionString) {
+  console.error('Missing MONGODB_URI in seed script environment. Create backend/.env or export MONGODB_URI before running the seed.');
+  process.exit(1);
+}
 
   //mongodb+srv://admin:MyStrongPassword@mycluster.abcd123.mongodb.net/myDatabase
 
