@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import PostCard from '../components/PostCard';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -25,14 +25,6 @@ const HomePage = () => {
     'Entertainment'
   ];
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  useEffect(() => {
-    filterPosts();
-  }, [searchQuery, selectedCategory, posts]);
-
   const fetchPosts = async () => {
     try {
       const response = await api.getAllPosts();
@@ -46,7 +38,7 @@ const HomePage = () => {
     }
   };
 
-  const filterPosts = () => {
+  const filterPosts = useCallback(() => {
     let filtered = posts;
 
     if (selectedCategory !== 'All') {
@@ -62,7 +54,15 @@ const HomePage = () => {
     }
 
     setFilteredPosts(filtered);
-  };
+  }, [posts, searchQuery, selectedCategory]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    filterPosts();
+  }, [filterPosts]);
 
   return (
     <div className="min-h-screen">

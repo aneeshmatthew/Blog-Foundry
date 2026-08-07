@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -30,11 +30,7 @@ const EditPostPage = () => {
     'Entertainment'
   ];
 
-  useEffect(() => {
-    fetchPost();
-  }, [id]);
-
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     try {
       const response = await api.getPostById(id);
       const post = response.post;
@@ -51,7 +47,12 @@ const EditPostPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  useEffect(() => {
+    fetchPost();
+  }, [fetchPost]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
