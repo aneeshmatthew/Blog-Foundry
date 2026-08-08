@@ -4,7 +4,8 @@
   "outputDirectory": "frontend/build",
   "installCommand": "npm install && cd backend && npm install && cd ../frontend && npm install",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/api", "destination": "/api/index.js" },
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "functions": {
