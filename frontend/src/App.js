@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import HomePage from './pages/HomePage';
 import MyPostsPage from './pages/MyPostsPage';
 import CreatePostPage from './pages/CreatePostPage';
@@ -38,6 +39,7 @@ function App() {
       />
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
+        <Route path="/signup" element={user ? <Navigate to="/" /> : <SignupPage />} />
         <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" />} />
         <Route path="/my-posts" element={user ? <MyPostsPage /> : <Navigate to="/login" />} />
         <Route path="/create" element={user ? <CreatePostPage /> : <Navigate to="/login" />} />

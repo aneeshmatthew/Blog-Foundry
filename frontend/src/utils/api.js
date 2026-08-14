@@ -25,6 +25,19 @@ export const api = {
     return response.json();
   },
 
+  register: async (name, email, password) => {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Registration failed');
+    }
+    return response.json();
+  },
+
   // Posts
   getAllPosts: async () => {
     const response = await fetch(`${API_BASE_URL}/posts`);
